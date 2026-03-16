@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AxisVault — Only the Hardest Pieces</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Cormorant+Garamond:ital,wght@0,300;0,600;1,400&family=Rajdhani:wght@300;500;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--g:#C9A84C;--gl:#F0D080;--gd:#7A5E1A;--b:#080808;--b2:#111;--b3:#181818;--b4:#222;--w:#F0EAD6;--wd:#9A9080}
+html{scroll-behavior:smooth}
+body{background:var(--b);color:var(--w);font-family:'Rajdhani',sans-serif;overflow-x:hidden;cursor:none}
+
+/* CURSOR */
+#cur{position:fixed;width:10px;height:10px;background:var(--g);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);mix-blend-mode:difference}
+#cur2{position:fixed;width:40px;height:40px;border:1px solid rgba(201,168,76,0.6);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:all 0.12s ease}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;justify-content:space-between;align-items:center;padding:1.2rem 5rem;background:rgba(8,8,8,0.9);backdrop-filter:blur(30px);border-bottom:1px solid rgba(201,168,76,0.08)}
+.logo{font-family:'Cinzel Decorative',serif;font-size:1rem;letter-spacing:0.4em;color:var(--g);text-decoration:none;position:relative}
+.logo::after{content:'EST. MMXXIV';position:absolute;bottom:-12px;left:0;font-size:0.45rem;letter-spacing:0.4em;color:var(--wd);font-family:'Rajdhani',sans-serif}
+.nav-links{display:flex;gap:2.5rem;list-style:none}
+.nav-links a{text-decoration:none;color:var(--wd);font-size:0.7rem;letter-spacing:0.25em;text-transform:uppercase;transition:color 0.3s;font-weight:500}
+.nav-links a:hover{color:var(--g)}
+.nav-right{display:flex;align-items:center;gap:1.5rem}
+.cart-btn{position:relative;background:none;border:1px solid rgba(201,168,76,0.3);color:var(--g);width:38px;height:38px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:0.9rem;transition:all 0.3s}
+.cart-btn:hover{background:var(--g);color:var(--b)}
+.cart-count{position:absolute;top:-6px;right:-6px;background:var(--g);color:var(--b);width:16px;height:16px;border-radius:50%;font-size:0.5rem;display:flex;align-items:center;justify-content:center;font-weight:700}
+
+/* HERO */
+#home{height:100vh;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+.hero-video-bg{position:absolute;inset:0;background:var(--b)}
+.particles{position:absolute;inset:0;overflow:hidden}
+.particle{position:absolute;width:1px;background:linear-gradient(to bottom,transparent,var(--g),transparent);animation:fall linear infinite;opacity:0}
+@keyframes fall{0%{transform:translateY(-100px);opacity:0}10%{opacity:1}90%{opacity:0.3}100%{transform:translateY(110vh);opacity:0}}
+.hero-center{position:relative;z-index:2;text-align:center}
+.hero-eyebrow{display:flex;align-items:center;gap:1rem;justify-content:center;margin-bottom:2.5rem;opacity:0;animation:up 1s 0.4s forwards}
+.eyebrow-line{width:40px;height:1px;background:var(--g)}
+.eyebrow-text{font-size:0.6rem;letter-spacing:0.6em;color:var(--g);text-transform:uppercase}
+.hero-main{opacity:0;animation:up 1s 0.6s forwards}
+.hero-ax{font-family:'Cinzel Decorative',serif;font-size:clamp(4rem,12vw,10rem);color:var(--w);line-height:0.85;display:block;letter-spacing:-0.02em}
+.hero-vault{font-family:'Cinzel Decorative',serif;font-size:clamp(4rem,12vw,10rem);color:transparent;-webkit-text-stroke:1px var(--g);line-height:0.85;display:block;letter-spacing:-0.02em}
+.hero-tagline{font-family:'Cormorant Garamond',serif;font-size:clamp(0.9rem,2vw,1.2rem);font-style:italic;color:var(--wd);letter-spacing:0.3em;margin-top:2rem;opacity:0;animation:up 1s 0.8s forwards}
+.hero-actions{display:flex;gap:1.5rem;justify-content:center;margin-top:3.5rem;opacity:0;animation:up 1s 1s forwards}
+.btn-gold{background:var(--g);color:var(--b);padding:0.9rem 2.5rem;font-family:'Rajdhani',sans-serif;font-size:0.75rem;letter-spacing:0.35em;font-weight:700;text-transform:uppercase;border:none;cursor:pointer;position:relative;overflow:hidden;transition:all 0.3s}
+.btn-gold::before{content:'';position:absolute;inset:0;background:var(--gl);transform:translateX(-100%);transition:transform 0.3s}
+.btn-gold:hover::before{transform:translateX(0)}
+.btn-gold span{position:relative;z-index:1}
+.btn-ghost{background:none;color:var(--g);padding:0.9rem 2.5rem;font-family:'Rajdhani',sans-serif;font-size:0.75rem;letter-spacing:0.35em;font-weight:700;text-transform:uppercase;border:1px solid rgba(201,168,76,0.35);cursor:pointer;transition:all 0.3s}
+.btn-ghost:hover{border-color:var(--g);background:rgba(201,168,76,0.05)}
+.hero-scroll-hint{position:absolute;bottom:2.5rem;right:5rem;display:flex;flex-direction:column;align-items:center;gap:0.8rem;opacity:0;animation:up 1s 1.3s forwards}
+.scroll-num{font-size:0.55rem;letter-spacing:0.4em;color:var(--wd);writing-mode:vertical-rl}
+.scroll-bar{width:1px;height:70px;background:linear-gradient(var(--g),transparent);animation:shrink 2s infinite}
+@keyframes shrink{0%{transform:scaleY(1);transform-origin:top}50%{transform:scaleY(0.3);transform-origin:top}100%{transform:scaleY(1);transform-origin:top}}
+.hero-number{position:absolute;bottom:2.5rem;left:5rem;font-family:'Cinzel Decorative',serif;font-size:0.6rem;letter-spacing:0.4em;color:rgba(201,168,76,0.2);opacity:0;animation:up 1s 1.3s forwards}
+
+/* TICKER */
+.ticker{background:var(--g);padding:0.7rem 0;overflow:hidden}
+.ticker-inner{display:flex;animation:tick 18s linear infinite;white-space:nowrap}
+.ticker-item{flex-shrink:0;font-family:'Cinzel Decorative',serif;font-size:0.6rem;letter-spacing:0.5em;color:var(--b);text-transform:uppercase;padding:0 2.5rem}
+.ticker-sep{color:rgba(0,0,0,0.4)}
+
+/* DROP ALERT */
+.drop-alert{background:var(--b3);border-top:1px solid rgba(201,168,76,0.1);border-bottom:1px solid rgba(201,168,76,0.1);padding:1rem 5rem;display:flex;justify-content:space-between;align-items:center}
+.drop-text{display:flex;align-items:center;gap:1rem}
+.drop-dot{width:8px;height:8px;background:var(--g);border-radius:50%;animation:pulse 1.5s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.4;transform:scale(0.6)}}
+.drop-label{font-size:0.65rem;letter-spacing:0.4em;color:var(--g);text-transform:uppercase}
+.drop-title{font-family:'Cinzel Decorative',serif;font-size:0.85rem;color:var(--w);letter-spacing:0.15em}
+.countdown{display:flex;gap:2rem}
+.cd-item{text-align:center}
+.cd-num{font-family:'Cinzel Decorative',serif;font-size:1.6rem;color:var(--g);line-height:1;display:block}
+.cd-label{font-size:0.5rem;letter-spacing:0.3em;color:var(--wd);text-transform:uppercase}
+
+/* FEATURED */
+#featured{padding:7rem 5rem;background:var(--b)}
+.feat-header{display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:end;margin-bottom:5rem}
+.feat-title-wrap .section-tag{font-size:0.6rem;letter-spacing:0.5em;color:var(--g);text-transform:uppercase;margin-bottom:1rem}
+.feat-title{font-family:'Cinzel Decorative',serif;font-size:clamp(1.8rem,4vw,3.2rem);color:var(--w);line-height:1.1}
+.feat-desc{font-family:'Cormorant Garamond',serif;font-size:1.05rem;color:var(--wd);line-height:1.9;font-style:italic}
+.feat-grid{display:grid;grid-template-columns:1.5fr 1fr 1fr;grid-template-rows:auto auto;gap:3px}
+.feat-card{position:relative;overflow:hidden;cursor:pointer;background:var(--b3)}
+.feat-card.big{grid-row:span 2}
+.feat-card-inner{width:100%;height:100%;min-height:320px;display:flex;align-items:center;justify-content:center;position:relative;transition:transform 0.6s}
+.feat-card:hover .feat-card-inner{transform:scale(1.04)}
+.feat-card-bg{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.feat-card.big .feat-card-inner{min-height:660px}
+.feat-info{position:absolute;bottom:0;left:0;right:0;padding:2rem;background:linear-gradient(to top,rgba(8,8,8,0.96),transparent);transform:translateY(20px);opacity:0;transition:all 0.4s}
+.feat-card:hover .feat-info{transform:translateY(0);opacity:1}
+.feat-name{font-family:'Cinzel Decorative',serif;font-size:0.9rem;color:var(--w);letter-spacing:0.1em;margin-bottom:0.4rem}
+.feat-price{color:var(--g);font-size:0.85rem;letter-spacing:0.2em;margin-bottom:1rem}
+.feat-buy{background:var(--g);color:var(--b);border:none;padding:0.5rem 1.5rem;font-family:'Rajdhani',sans-serif;font-size:0.65rem;letter-spacing:0.3em;text-transform:uppercase;font-weight:700;cursor:pointer;width:100%;transition:background 0.2s}
+.feat-buy:hover{background:var(--gl)}
+.feat-tag{position:absolute;top:1.2rem;left:1.2rem;background:var(--g);color:var(--b);font-size:0.5rem;letter-spacing:0.4em;text-transform:uppercase;padding:0.3rem 0.9rem;font-weight:700;font-family:'Rajdhani',sans-serif}
+.feat-tag.hot{background:var(--w);color:var(--b)}
+
+/* LOOKBOOK */
+#lookbook{padding:7rem 5rem;background:var(--b2)}
+.lb-header{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:4rem}
+.lb-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:3px}
+.lb-item{position:relative;overflow:hidden;cursor:pointer;aspect-ratio:2/3}
+.lb-inner{width:100%;height:100%;background:var(--b3);display:flex;align-items:center;justify-content:center;transition:transform 0.5s}
+.lb-item:hover .lb-inner{transform:scale(1.06)}
+.lb-label{position:absolute;bottom:0;left:0;right:0;padding:1.2rem;background:linear-gradient(to top,rgba(8,8,8,0.9),transparent);opacity:0;transform:translateY(10px);transition:all 0.3s;text-align:center}
+.lb-item:hover .lb-label{opacity:1;transform:translateY(0)}
+.lb-name{font-family:'Cinzel Decorative',serif;font-size:0.7rem;color:var(--w);letter-spacing:0.15em}
+.lb-season{font-size:0.55rem;letter-spacing:0.4em;color:var(--g);text-transform:uppercase;margin-top:0.3rem}
+
+/* SIZE BAR */
+.size-bar{padding:2rem 5rem;background:var(--b3);border-top:1px solid rgba(201,168,76,0.1);border-bottom:1px solid rgba(201,168,76,0.1);display:flex;gap:4rem;align-items:center}
+.size-bar-title{font-size:0.6rem;letter-spacing:0.4em;color:var(--g);text-transform:uppercase;flex-shrink:0}
+.size-chips{display:flex;gap:0.8rem;flex-wrap:wrap}
+.size-chip{border:1px solid rgba(201,168,76,0.2);color:var(--wd);padding:0.3rem 0.9rem;font-size:0.65rem;letter-spacing:0.2em;cursor:pointer;transition:all 0.2s;font-family:'Rajdhani',sans-serif}
+.size-chip:hover,.size-chip.sel{border-color:var(--g);color:var(--g)}
+
+/* ABOUT */
+#about{padding:7rem 5rem;background:var(--b)}
+.about-wrap{display:grid;grid-template-columns:1fr 1fr;gap:8rem;align-items:center}
+.about-frame{border:1px solid rgba(201,168,76,0.12);padding:4rem;background:var(--b2);position:relative}
+.about-frame::before{content:'AXIS';font-family:'Cinzel Decorative',serif;font-size:8rem;color:rgba(201,168,76,0.04);position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none;letter-spacing:0.3em;white-space:nowrap}
+.about-corner{position:absolute;width:20px;height:20px;border-color:var(--g);border-style:solid}
+.about-corner.tl{top:-1px;left:-1px;border-width:2px 0 0 2px}
+.about-corner.tr{top:-1px;right:-1px;border-width:2px 2px 0 0}
+.about-corner.bl{bottom:-1px;left:-1px;border-width:0 0 2px 2px}
+.about-corner.br{bottom:-1px;right:-1px;border-width:0 2px 2px 0}
+.about-values{display:flex;flex-direction:column;gap:2rem}
+.value-item{display:flex;gap:1.5rem;align-items:flex-start;padding-bottom:2rem;border-bottom:1px solid rgba(201,168,76,0.07)}
+.value-num{font-family:'Cinzel Decorative',serif;font-size:0.7rem;color:rgba(201,168,76,0.3);flex-shrink:0;margin-top:4px}
+.value-title{font-family:'Cinzel Decorative',serif;font-size:0.85rem;color:var(--w);letter-spacing:0.1em;margin-bottom:0.5rem}
+.value-desc{font-family:'Cormorant Garamond',serif;font-size:0.95rem;color:var(--wd);line-height:1.7}
+.about-right .sect-tag{font-size:0.6rem;letter-spacing:0.5em;color:var(--g);text-transform:uppercase;margin-bottom:1.2rem}
+.about-right h2{font-family:'Cinzel Decorative',serif;font-size:clamp(1.5rem,3.5vw,2.8rem);color:var(--w);line-height:1.15;margin-bottom:2rem}
+.gold-line{width:50px;height:1px;background:var(--g);margin-bottom:2.5rem}
+.about-body{font-family:'Cormorant Garamond',serif;font-size:1.05rem;line-height:1.95;color:var(--wd);margin-bottom:2rem}
+.about-quote-block{border-left:2px solid var(--g);padding:1.5rem 2rem;margin:2.5rem 0;background:rgba(201,168,76,0.03)}
+.about-quote-block p{font-family:'Cormorant Garamond',serif;font-size:1.25rem;font-style:italic;color:var(--w);line-height:1.6}
+
+/* NEWSLETTER */
+#newsletter{padding:6rem 5rem;background:var(--b3);text-align:center;border-top:1px solid rgba(201,168,76,0.08);border-bottom:1px solid rgba(201,168,76,0.08);position:relative;overflow:hidden}
+.nl-bg{position:absolute;inset:0;background:radial-gradient(ellipse at center,rgba(201,168,76,0.05) 0%,transparent 70%)}
+.nl-tag{font-size:0.6rem;letter-spacing:0.5em;color:var(--g);text-transform:uppercase;margin-bottom:1.5rem}
+.nl-title{font-family:'Cinzel Decorative',serif;font-size:clamp(1.5rem,4vw,3rem);color:var(--w);margin-bottom:1rem}
+.nl-sub{font-family:'Cormorant Garamond',serif;font-size:1.1rem;font-style:italic;color:var(--wd);margin-bottom:3rem}
+.nl-form{display:flex;gap:0;max-width:500px;margin:0 auto;position:relative;z-index:1}
+.nl-input{flex:1;background:rgba(255,255,255,0.04);border:1px solid rgba(201,168,76,0.25);border-right:none;color:var(--w);padding:1rem 1.5rem;font-family:'Rajdhani',sans-serif;font-size:0.85rem;outline:none;letter-spacing:0.1em}
+.nl-input::placeholder{color:rgba(201,168,76,0.3)}
+.nl-input:focus{border-color:rgba(201,168,76,0.6)}
+.nl-btn{background:var(--g);color:var(--b);border:none;padding:1rem 2rem;font-family:'Rajdhani',sans-serif;font-size:0.75rem;letter-spacing:0.3em;font-weight:700;text-transform:uppercase;cursor:pointer;transition:background 0.3s;white-space:nowrap}
+.nl-btn:hover{background:var(--gl)}
+.nl-perks{display:flex;justify-content:center;gap:3rem;margin-top:2.5rem}
+.nl-perk{display:flex;align-items:center;gap:0.6rem;font-size:0.65rem;letter-spacing:0.2em;color:var(--wd);text-transform:uppercase}
+.nl-perk::before{content:'';width:4px;height:4px;background:var(--g);flex-shrink:0}
+
+/* CONTACT */
+#contact{padding:7rem 5rem;background:var(--b2)}
+.contact-wrap{display:grid;grid-template-columns:1fr 1.2fr;gap:6rem}
+.contact-left .sect-tag{font-size:0.6rem;letter-spacing:0.5em;color:var(--g);text-transform:uppercase;margin-bottom:1.2rem}
+.contact-left h2{font-family:'Cinzel Decorative',serif;font-size:clamp(1.5rem,3.5vw,2.8rem);color:var(--w);line-height:1.15;margin-bottom:1.5rem}
+.contact-channels{display:flex;flex-direction:column;gap:1.5rem;margin-top:3rem}
+.ch-item{display:flex;gap:1.5rem;align-items:center;padding:1.2rem;border:1px solid rgba(201,168,76,0.1);transition:border-color 0.3s;cursor:pointer}
+.ch-item:hover{border-color:rgba(201,168,76,0.4)}
+.ch-icon{width:44px;height:44px;border:1px solid rgba(201,168,76,0.3);display:flex;align-items:center;justify-content:center;color:var(--g);font-size:1rem;flex-shrink:0}
+.ch-label{font-size:0.55rem;letter-spacing:0.4em;color:var(--wd);text-transform:uppercase;margin-bottom:0.3rem}
+.ch-val{color:var(--w);font-size:0.9rem;letter-spacing:0.05em}
+.form-wrap{display:flex;flex-direction:column;gap:1.2rem}
+.fg{display:flex;flex-direction:column;gap:0.5rem}
+.fl{font-size:0.6rem;letter-spacing:0.35em;color:var(--g);text-transform:uppercase}
+.fi,.fta{background:rgba(255,255,255,0.03);border:1px solid rgba(201,168,76,0.15);color:var(--w);padding:0.9rem 1.2rem;font-family:'Rajdhani',sans-serif;font-size:0.9rem;outline:none;transition:border 0.3s;width:100%;letter-spacing:0.05em}
+.fi:focus,.fta:focus{border-color:rgba(201,168,76,0.5)}
+.fi::placeholder,.fta::placeholder{color:rgba(201,168,76,0.2)}
+.fta{height:130px;resize:none}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem}
+.fsub{background:var(--g);color:var(--b);border:none;padding:1rem;font-family:'Rajdhani',sans-serif;font-size:0.75rem;letter-spacing:0.35em;font-weight:700;text-transform:uppercase;cursor:pointer;transition:background 0.3s;width:100%;display:flex;align-items:center;justify-content:center;gap:0.8rem}
+.fsub:hover{background:var(--gl)}
+
+/* FOOTER */
+footer{background:var(--b);border-top:1px solid rgba(201,168,76,0.08);padding:4rem 5rem}
+.footer-top{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:4rem;margin-bottom:4rem}
+.footer-brand{font-family:'Cinzel Decorative',serif;font-size:1.1rem;color:var(--g);letter-spacing:0.35em;margin-bottom:1.2rem}
+.footer-tagline{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:1rem;color:var(--wd);line-height:1.8}
+.footer-col h4{font-size:0.6rem;letter-spacing:0.4em;color:var(--g);text-transform:uppercase;margin-bottom:1.5rem}
+.footer-col ul{list-style:none;display:flex;flex-direction:column;gap:0.8rem}
+.footer-col ul a{text-decoration:none;color:var(--wd);font-size:0.8rem;letter-spacing:0.1em;transition:color 0.3s}
+.footer-col ul a:hover{color:var(--w)}
+.footer-bottom{display:flex;justify-content:space-between;align-items:center;padding-top:2rem;border-top:1px solid rgba(201,168,76,0.06)}
+.footer-copy{font-size:0.6rem;letter-spacing:0.2em;color:var(--wd);text-transform:uppercase}
+.footer-socials{display:flex;gap:1rem}
+.soc{width:34px;height:34px;border:1px solid rgba(201,168,76,0.2);display:flex;align-items:center;justify-content:center;color:var(--wd);font-size:0.6rem;letter-spacing:0.1em;text-decoration:none;transition:all 0.3s;font-family:'Rajdhani',sans-serif;font-weight:700}
+.soc:hover{border-color:var(--g);color:var(--g)}
+
+/* ANIMATIONS */
+@keyframes up{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:none}}
+@keyframes tick{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.rv{opacity:0;transform:translateY(36px);transition:opacity 0.85s,transform 0.85s}
+.rv.on{opacity:1;transform:none}
+.rv2{opacity:0;transform:translateX(-30px);transition:opacity 0.85s,transform 0.85s}
+.rv2.on{opacity:1;transform:none}
+
+@media(max-width:900px){
+  nav{padding:1.2rem 2rem}
+  .nav-links{display:none}
+  #featured,#lookbook,#about,#contact,#newsletter,footer{padding:5rem 2rem}
+  .about-wrap,.contact-wrap,.footer-top{grid-template-columns:1fr}
+  .feat-grid{grid-template-columns:1fr 1fr}
+  .feat-card.big{grid-row:auto}
+  .drop-alert{padding:1rem 2rem;flex-direction:column;gap:1rem;text-align:center}
+  .size-bar{padding:1.5rem 2rem;flex-direction:column;align-items:flex-start}
+  .lb-strip{grid-template-columns:1fr 1fr}
+  .hero-scroll-hint,.hero-number{display:none}
+  .feat-header{grid-template-columns:1fr}
+  .nl-perks{flex-direction:column;align-items:center;gap:1rem}
+}
+</style>
+</head>
+<body>
+<div id="cur"></div>
+<div id="cur2"></div>
+
+<!-- NAV -->
+<nav>
+  <a href="#home" class="logo">AXISVAULT</a>
+  <ul class="nav-links">
+    <li><a href="#home">Home</a></li>
+    <li><a href="#featured">Shop</a></li>
+    <li><a href="#lookbook">Lookbook</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <div class="nav-right">
+    <button class="cart-btn" id="cartBtn">&#9768;<span class="cart-count" id="cartCount">0</span></button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section id="home">
+  <div class="hero-video-bg"></div>
+  <div class="particles" id="particles"></div>
+  <div class="hero-center">
+    <div class="hero-eyebrow"><div class="eyebrow-line"></div><span class="eyebrow-text">Curated Classics &#9670; Gothic Streetwear</span><div class="eyebrow-line"></div></div>
+    <div class="hero-main">
+      <span class="hero-ax">AXIS</span>
+      <span class="hero-vault">VAULT</span>
+    </div>
+    <p class="hero-tagline">Only the Hardest Pieces.</p>
+    <div class="hero-actions">
+      <button class="btn-gold" onclick="document.getElementById('featured').scrollIntoView({behavior:'smooth'})"><span>Shop Collection</span></button>
+      <button class="btn-ghost" onclick="document.getElementById('lookbook').scrollIntoView({behavior:'smooth'})">Lookbook</button>
+    </div>
+  </div>
+  <div class="hero-scroll-hint"><span class="scroll-num">SCROLL</span><div class="scroll-bar"></div></div>
+  <div class="hero-number">001 / MMXXIV</div>
+</section>
+
+<!-- TICKER -->
+<div class="ticker"><div class="ticker-inner">
+  <span class="ticker-item">Angel Wing Series <span class="ticker-sep">&#9670;</span></span>
+  <span class="ticker-item">Gothic Streetwear <span class="ticker-sep">&#9670;</span></span>
+  <span class="ticker-item">Only The Hardest <span class="ticker-sep">&#9670;</span></span>
+  <span class="ticker-item">Y2K Curated <span class="ticker-sep">&#9670;</span></span>
+  <span class="ticker-item">New Drop Incoming <span class="ticker-sep">&#9670;</span></span>
+  <span class="ticker-item">AxisVault Exclusive <span class="ticker-sep">&#9670;</span></span>
+  <span class="ticker-item">Angel Wing Series <span class="ticker-sep">&#9670;</span></span>
+  <span class="ticker-item">Gothic Streetwear <span class="ticker-sep">&#9670;</span></span>
+  <span class="ticker-item">Only The Hardest <span class="ticker-sep">&#9670;</span></span>
+  <span class="ticker-item">Y2K Curated <span class="ticker-sep">&#9670;</span></span>
+  <span class="ticker-item">New Drop Incoming <span class="ticker-sep">&#9670;</span></span>
+  <span class="ticker-item">AxisVault Exclusive <span class="ticker-sep">&#9670;</span></span>
+</div></div>
+
+<!-- DROP COUNTDOWN -->
+<div class="drop-alert rv">
+  <div class="drop-text">
+    <div class="drop-dot"></div>
+    <div><div class="drop-label">Next Drop</div><div class="drop-title">Dark Seraph Collection — Limited Release</div></div>
+  </div>
+  <div class="countdown">
+    <div class="cd-item"><span class="cd-num" id="cdD">00</span><span class="cd-label">Days</span></div>
+    <div class="cd-item"><span class="cd-num" id="cdH">00</span><span class="cd-label">Hrs</span></div>
+    <div class="cd-item"><span class="cd-num" id="cdM">00</span><span class="cd-label">Min</span></div>
+    <div class="cd-item"><span class="cd-num" id="cdS">00</span><span class="cd-label">Sec</span></div>
+  </div>
+</div>
+
+<!-- SIZE BAR -->
+<div class="size-bar">
+  <span class="size-bar-title">Quick Size</span>
+  <div class="size-chips">
+    <div class="size-chip sel">XS</div><div class="size-chip">S</div><div class="size-chip">M</div><div class="size-chip">L</div><div class="size-chip">XL</div><div class="size-chip">XXL</div>
+  </div>
+</div>
+
+<!-- SHOP -->
+<section id="featured">
+  <div class="feat-header rv">
+    <div class="feat-title-wrap">
+      <p class="section-tag">&#9670; The Vault</p>
+      <h2 class="feat-title">Current<br>Collection</h2>
+    </div>
+    <p class="feat-desc">Each piece is handpicked from the underground. No mass production. No compromises. Only the hardest pieces make it through.</p>
+  </div>
+  <div class="feat-grid rv">
+    <div class="feat-card big">
+      <div class="feat-card-inner">
+        <div class="feat-card-bg">
+          <svg width="220" height="320" viewBox="0 0 220 320" fill="none">
+            <rect width="220" height="320" fill="#141414"/>
+            <path d="M110 30 C110 30 40 80 30 140 C20 200 60 250 110 280 C160 250 200 200 190 140 C180 80 110 30 110 30Z" stroke="#C9A84C" stroke-width="0.8" fill="rgba(201,168,76,0.04)"/>
+            <path d="M110 60 C110 60 60 100 55 150 C50 200 75 240 110 265 C145 240 170 200 165 150 C160 100 110 60 110 60Z" stroke="#C9A84C" stroke-width="0.5" fill="rgba(201,168,76,0.03)"/>
+            <path d="M75 120 C55 100 30 95 20 110 C35 130 50 155 60 170 L75 120Z" stroke="#C9A84C" stroke-width="0.7" fill="rgba(201,168,76,0.08)"/>
+            <path d="M145 120 C165 100 190 95 200 110 C185 130 170 155 160 170 L145 120Z" stroke="#C9A84C" stroke-width="0.7" fill="rgba(201,168,76,0.08)"/>
+            <path d="M70 130 C45 115 18 118 8 135 C25 155 42 180 55 200 L70 130Z" stroke="#C9A84C" stroke-width="0.5" fill="rgba(201,168,76,0.05)"/>
+            <path d="M150 130 C175 115 202 118 212 135 C195 155 178 180 165 200 L150 130Z" stroke="#C9A84C" stroke-width="0.5" fill="rgba(201,168,76,0.05)"/>
+            <circle cx="110" cy="90" r="15" stroke="#C9A84C" stroke-width="0.6" fill="rgba(201,168,76,0.06)"/>
+            <path d="M103 90 L117 90 M110 83 L110 97" stroke="#C9A84C" stroke-width="0.6"/>
+            <text x="110" y="308" text-anchor="middle" font-family="serif" font-size="8" fill="rgba(201,168,76,0.4)" letter-spacing="4">ANGEL SERIES</text>
+          </svg>
+        </div>
+      </div>
+      <span class="feat-tag">Signature</span>
+      <div class="feat-info">
+        <p class="feat-name">Dark Seraph Hoodie</p>
+        <p class="feat-price">$119.99</p>
+        <button class="feat-buy" onclick="addCart(event)">Add to Cart</button>
+      </div>
+    </div>
+    <div class="feat-card">
+      <div class="feat-card-inner">
+        <div class="feat-card-bg">
+          <svg width="200" height="240" viewBox="0 0 200 240" fill="none">
+            <rect width="200" height="240" fill="#111"/>
+            <circle cx="100" cy="100" r="55" stroke="#C9A84C" stroke-width="0.7" fill="rgba(201,168,76,0.03)"/>
+            <circle cx="100" cy="100" r="35" stroke="#C9A84C" stroke-width="0.4" fill="none" stroke-dasharray="4 4"/>
+            <path d="M70 75 Q100 50 130 75 Q155 100 130 125 Q100 150 70 125 Q45 100 70 75" stroke="#C9A84C" stroke-width="0.7" fill="rgba(201,168,76,0.06)"/>
+            <text x="100" y="175" text-anchor="middle" font-family="serif" font-size="7" fill="rgba(201,168,76,0.35)" letter-spacing="5">ZAUN EDIT</text>
+          </svg>
+        </div>
+      </div>
+      <span class="feat-tag hot">Hot</span>
+      <div class="feat-info">
+        <p class="feat-name">Zaun Graphic Tee</p>
+        <p class="feat-price">$64.99</p>
+        <button class="feat-buy" onclick="addCart(event)">Add to Cart</button>
+      </div>
+    </div>
+    <div class="feat-card">
+      <div class="feat-card-inner">
+        <div class="feat-card-bg">
+          <svg width="200" height="240" viewBox="0 0 200 240" fill="none">
+            <rect width="200" height="240" fill="#0f0f0f"/>
+            <rect x="60" y="30" width="80" height="100" rx="2" stroke="#C9A84C" stroke-width="0.7" fill="rgba(201,168,76,0.04)"/>
+            <path d="M60 30 L40 60 L40 180 L60 130" stroke="#C9A84C" stroke-width="0.6" fill="rgba(201,168,76,0.05)"/>
+            <path d="M140 30 L160 60 L160 180 L140 130" stroke="#C9A84C" stroke-width="0.6" fill="rgba(201,168,76,0.05)"/>
+            <path d="M75 50 C75 50 85 40 100 40 C115 40 125 50 125 50 C115 80 110 100 100 110 C90 100 85 80 75 50Z" stroke="#C9A84C" stroke-width="0.5" fill="rgba(201,168,76,0.07)"/>
+            <text x="100" y="175" text-anchor="middle" font-family="serif" font-size="7" fill="rgba(201,168,76,0.35)" letter-spacing="5">RELIC JACKET</text>
+          </svg>
+        </div>
+      </div>
+      <span class="feat-tag">Limited</span>
+      <div class="feat-info">
+        <p class="feat-name">Relic Wing Jacket</p>
+        <p class="feat-price">$159.99</p>
+        <button class="feat-buy" onclick="addCart(event)">Add to Cart</button>
+      </div>
+    </div>
+    <div class="feat-card">
+      <div class="feat-card-inner">
+        <div class="feat-card-bg">
+          <svg width="200" height="240" viewBox="0 0 200 240" fill="none">
+            <rect width="200" height="240" fill="#131313"/>
+            <path d="M65 30 L70 200 L130 200 L135 30 Z" stroke="#C9A84C" stroke-width="0.7" fill="rgba(201,168,76,0.04)"/>
+            <path d="M50 38 L150 38" stroke="#C9A84C" stroke-width="0.5"/>
+            <path d="M80 60 C80 60 85 45 100 45 C115 45 120 60 120 60 C115 90 110 115 100 120 C90 115 85 90 80 60Z" stroke="#C9A84C" stroke-width="0.4" fill="rgba(201,168,76,0.07)"/>
+            <text x="100" y="215" text-anchor="middle" font-family="serif" font-size="7" fill="rgba(201,168,76,0.35)" letter-spacing="5">CHAOS JOGGERS</text>
+          </svg>
+        </div>
+      </div>
+      <div class="feat-info">
+        <p class="feat-name">Chaos Wide Leg</p>
+        <p class="feat-price">$84.99</p>
+        <button class="feat-buy" onclick="addCart(event)">Add to Cart</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- LOOKBOOK -->
+<section id="lookbook">
+  <div class="lb-header rv">
+    <div>
+      <p style="font-size:0.6rem;letter-spacing:0.5em;color:var(--g);text-transform:uppercase;margin-bottom:0.8rem">&#9670; Season I</p>
+      <h2 style="font-family:'Cinzel Decorative',serif;font-size:clamp(1.5rem,3.5vw,2.8rem);color:var(--w)">The Lookbook</h2>
+    </div>
+    <button class="btn-ghost">View All</button>
+  </div>
+  <div class="lb-strip rv">
+    <div class="lb-item"><div class="lb-inner">
+      <svg width="130" height="200" viewBox="0 0 130 200" fill="none"><rect width="130" height="200" fill="#161616"/><path d="M65 20 C65 20 25 50 20 90 C15 130 35 165 65 180 C95 165 115 130 110 90 C105 50 65 20 65 20Z" stroke="#C9A84C" stroke-width="0.8" fill="rgba(201,168,76,0.05)"/><path d="M50 65 C35 50 15 48 8 62 C20 78 32 98 40 112 L50 65Z" stroke="#C9A84C" stroke-width="0.6" fill="rgba(201,168,76,0.08)"/><path d="M80 65 C95 50 115 48 122 62 C110 78 98 98 90 112 L80 65Z" stroke="#C9A84C" stroke-width="0.6" fill="rgba(201,168,76,0.08)"/></svg>
+    </div><div class="lb-label"><p class="lb-name">Hoodie I</p><p class="lb-season">Season 01</p></div></div>
+    <div class="lb-item"><div class="lb-inner">
+      <svg width="130" height="200" viewBox="0 0 130 200" fill="none"><rect width="130" height="200" fill="#121212"/><rect x="35" y="20" width="60" height="130" stroke="#C9A84C" stroke-width="0.7" fill="rgba(201,168,76,0.04)"/><path d="M35 20 L15 45 L15 170 L35 150" stroke="#C9A84C" stroke-width="0.5" fill="rgba(201,168,76,0.04)"/><path d="M95 20 L115 45 L115 170 L95 150" stroke="#C9A84C" stroke-width="0.5" fill="rgba(201,168,76,0.04)"/><circle cx="65" cy="75" r="20" stroke="#C9A84C" stroke-width="0.5" fill="rgba(201,168,76,0.06)"/></svg>
+    </div><div class="lb-label"><p class="lb-name">Jacket II</p><p class="lb-season">Season 01</p></div></div>
+    <div class="lb-item"><div class="lb-inner">
+      <svg width="130" height="200" viewBox="0 0 130 200" fill="none"><rect width="130" height="200" fill="#141414"/><path d="M40 20 L45 170 L85 170 L90 20Z" stroke="#C9A84C" stroke-width="0.7" fill="rgba(201,168,76,0.04)"/><path d="M28 28 L102 28" stroke="#C9A84C" stroke-width="0.5"/><path d="M50 50 C50 50 57 37 65 37 C73 37 80 50 80 50 C75 75 70 90 65 95 C60 90 55 75 50 50Z" stroke="#C9A84C" stroke-width="0.4" fill="rgba(201,168,76,0.07)"/></svg>
+    </div><div class="lb-label"><p class="lb-name">Joggers III</p><p class="lb-season">Season 01</p></div></div>
+    <div class="lb-item"><div class="lb-inner">
+      <svg width="130" height="200" viewBox="0 0 130 200" fill="none"><rect width="130" height="200" fill="#101010"/><circle cx="65" cy="80" r="45" stroke="#C9A84C" stroke-width="0.7" fill="rgba(201,168,76,0.03)"/><circle cx="65" cy="80" r="28" stroke="#C9A84C" stroke-width="0.4" fill="none" stroke-dasharray="3 3"/><path d="M45 60 Q65 40 85 60 Q100 80 85 100 Q65 120 45 100 Q30 80 45 60" stroke="#C9A84C" stroke-width="0.6" fill="rgba(201,168,76,0.07)"/><text x="65" y="158" text-anchor="middle" font-family="serif" font-size="7" fill="rgba(201,168,76,0.3)" letter-spacing="4">AXIS VAULT</text></svg>
+    </div><div class="lb-label"><p class="lb-name">Tee IV</p><p class="lb-season">Season 01</p></div></div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="about-wrap">
+    <div class="rv2">
+      <div class="about-frame">
+        <div class="about-corner tl"></div><div class="about-corner tr"></div><div class="about-corner bl"></div><div class="about-corner br"></div>
+        <div class="about-values">
+          <div class="value-item"><span class="value-num">01</span><div><div class="value-title">Curated Only</div><p class="value-desc">Every piece passes through rigorous selection. If it doesn't hit hard, it doesn't make it in the Vault.</p></div></div>
+          <div class="value-item"><span class="value-num">02</span><div><div class="value-title">Gothic Heritage</div><p class="value-desc">Rooted in dark aesthetics, angel symbolism, and Y2K energy — this is streetwear with soul.</p></div></div>
+          <div class="value-item"><span class="value-num">03</span><div><div class="value-title">Limited Always</div><p class="value-desc">No restocks. No mass runs. Once it's gone, it's gone. The Vault only drops what's rare.</p></div></div>
+        </div>
+      </div>
+    </div>
+    <div class="about-right rv">
+      <p class="sect-tag">&#9670; The Vault Story</p>
+      <h2>Born From<br>The Underground</h2>
+      <div class="gold-line"></div>
+      <p class="about-body">AxisVault was built for those who refuse to blend in. We don't follow trends — we pull from the underground and bring forward only what truly hits. Gothic, vintage, raw, and refined all at once.</p>
+      <div class="about-quote-block"><p>"Only the Hardest Pieces make it through the Vault."</p></div>
+      <p class="about-body">Every drop is a statement. We source globally, curate relentlessly, and deliver pieces that carry weight — aesthetically and culturally. This isn't fast fashion. This is the Vault.</p>
+      <div style="display:flex;gap:3rem;margin-top:2.5rem">
+        <div><p style="font-size:0.55rem;letter-spacing:0.4em;color:var(--g);text-transform:uppercase;margin-bottom:0.5rem">TikTok</p><p style="color:var(--w);font-size:0.85rem">@axisvintage.org</p></div>
+        <div><p style="font-size:0.55rem;letter-spacing:0.4em;color:var(--g);text-transform:uppercase;margin-bottom:0.5rem">Instagram</p><p style="color:var(--w);font-size:0.85rem">axisluxury.co</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- NEWSLETTER -->
+<section id="newsletter">
+  <div class="nl-bg"></div>
+  <p class="nl-tag rv">&#9670; Join The Vault</p>
+  <h2 class="nl-title rv">Get Early Access</h2>
+  <p class="nl-sub rv">Be first for every drop. Vault members only.</p>
+  <div class="nl-form rv">
+    <input type="email" class="nl-input" placeholder="your@email.com">
+    <button class="nl-btn">Join Now</button>
+  </div>
+  <div class="nl-perks rv">
+    <span class="nl-perk">Early Drop Access</span>
+    <span class="nl-perk">Exclusive Discounts</span>
+    <span class="nl-perk">No Spam Ever</span>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="contact-wrap">
+    <div class="contact-left rv2">
+      <p class="sect-tag">&#9670; Reach Out</p>
+      <h2>Contact<br>AxisVault</h2>
+      <div class="gold-line"></div>
+      <p style="font-family:'Cormorant Garamond',serif;font-size:1.05rem;color:var(--wd);line-height:1.9;font-style:italic">For orders, collabs, wholesale inquiries or just to talk pieces — we're here.</p>
+      <div class="contact-channels">
+        <div class="ch-item"><div class="ch-icon">&#9993;</div><div><p class="ch-label">Email</p><p class="ch-val">axisvintage.org</p></div></div>
+        <div class="ch-item"><div class="ch-icon">&#9670;</div><div><p class="ch-label">TikTok</p><p class="ch-val">@axisvintage.org</p></div></div>
+        <div class="ch-item"><div class="ch-icon">&#9737;</div><div><p class="ch-label">Instagram</p><p class="ch-val">axisluxury.co</p></div></div>
+      </div>
+    </div>
+    <div class="form-wrap rv">
+      <div class="form-row">
+        <div class="fg"><label class="fl">Name</label><input class="fi" type="text" placeholder="Your name"></div>
+        <div class="fg"><label class="fl">Email</label><input class="fi" type="email" placeholder="your@email.com"></div>
+      </div>
+      <div class="fg"><label class="fl">Subject</label><input class="fi" type="text" placeholder="Order / Collab / Wholesale"></div>
+      <div class="fg"><label class="fl">Message</label><textarea class="fta" placeholder="Tell us what you need..."></textarea></div>
+      <button class="fsub">Send Message &#9670;</button>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-top">
+    <div>
+      <div class="footer-brand">AXISVAULT</div>
+      <p class="footer-tagline">Only the Hardest Pieces.<br>Curated from the underground.<br>Delivered to those who know.</p>
+    </div>
+    <div class="footer-col"><h4>Shop</h4><ul><li><a href="#">All Pieces</a></li><li><a href="#">Hoodies</a></li><li><a href="#">Tees</a></li><li><a href="#">Joggers</a></li><li><a href="#">Jackets</a></li></ul></div>
+    <div class="footer-col"><h4>Vault</h4><ul><li><a href="#">About Us</a></li><li><a href="#">Lookbook</a></li><li><a href="#">Drops</a></li><li><a href="#">Collabs</a></li></ul></div>
+    <div class="footer-col"><h4>Help</h4><ul><li><a href="#">Sizing</a></li><li><a href="#">Shipping</a></li><li><a href="#">Returns</a></li><li><a href="#">Contact</a></li></ul></div>
+  </div>
+  <div class="footer-bottom">
+    <p class="footer-copy">&copy; 2025 AxisVault. All Rights Reserved.</p>
+    <div class="footer-socials">
+      <a href="https://www.tiktok.com/@axisvintage.org" class="soc" target="_blank">TT</a>
+      <a href="https://www.instagram.com/axisluxury.co" class="soc" target="_blank">IG</a>
+      <a href="mailto:info@axisvintage.org" class="soc">EM</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+// Custom cursor
+const cur=document.getElementById('cur'),cur2=document.getElementById('cur2');
+document.addEventListener('mousemove',e=>{
+  cur.style.left=e.clientX+'px';cur.style.top=e.clientY+'px';
+  setTimeout(()=>{cur2.style.left=e.clientX+'px';cur2.style.top=e.clientY+'px'},80);
+});
+document.querySelectorAll('button,a,.feat-card,.lb-item,.ch-item,.size-chip').forEach(el=>{
+  el.addEventListener('mouseenter',()=>{cur.style.transform='translate(-50%,-50%) scale(2)';cur2.style.width='60px';cur2.style.height='60px'});
+  el.addEventListener('mouseleave',()=>{cur.style.transform='translate(-50%,-50%) scale(1)';cur2.style.width='40px';cur2.style.height='40px'});
+});
+
+// Falling gold particles
+const pc=document.getElementById('particles');
+for(let i=0;i<30;i++){
+  const p=document.createElement('div');
+  p.className='particle';
+  p.style.cssText=`left:${Math.random()*100}%;height:${60+Math.random()*120}px;animation-duration:${4+Math.random()*8}s;animation-delay:${-Math.random()*10}s`;
+  pc.appendChild(p);
+}
+
+// Live countdown — 7 days from page load
+let target=new Date();target.setDate(target.getDate()+7);
+function tick(){
+  const diff=target-new Date();
+  if(diff<0)return;
+  document.getElementById('cdD').textContent=String(Math.floor(diff/86400000)).padStart(2,'0');
+  document.getElementById('cdH').textContent=String(Math.floor(diff%86400000/3600000)).padStart(2,'0');
+  document.getElementById('cdM').textContent=String(Math.floor(diff%3600000/60000)).padStart(2,'0');
+  document.getElementById('cdS').textContent=String(Math.floor(diff%60000/1000)).padStart(2,'0');
+}
+tick();setInterval(tick,1000);
+
+// Cart counter
+let cart=0;
+function addCart(e){
+  cart++;document.getElementById('cartCount').textContent=cart;
+  const btn=e.target;
+  btn.textContent='Added \u2713';btn.style.background='#2a2a2a';btn.style.color='#C9A84C';
+  setTimeout(()=>{btn.textContent='Add to Cart';btn.style.background='';btn.style.color='';},2000);
+}
+
+// Size selector
+document.querySelectorAll('.size-chip').forEach(c=>{
+  c.addEventListener('click',()=>{document.querySelectorAll('.size-chip').forEach(x=>x.classList.remove('sel'));c.classList.add('sel');});
+});
+
+// Scroll reveal
+const obs=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('on')}),{threshold:0.08});
+document.querySelectorAll('.rv,.rv2').forEach(el=>obs.observe(el));
+
+// Nav transparency on scroll
+window.addEventListener('scroll',()=>{
+  document.querySelector('nav').style.background=window.scrollY>60?'rgba(8,8,8,0.99)':'rgba(8,8,8,0.9)';
+});
+</script>
+</body>
+</html>
